@@ -31,6 +31,12 @@ export default function App() {
     },
   ]);
 
+  const pressHandler = (key) => {
+    // This should navigate to a new page
+    const item = beaconData.find((data) => data.id === key);
+    console.log(`Pressed ${key} - ${item.title}`);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Beacons</Text>
@@ -44,6 +50,7 @@ export default function App() {
             minor={item.minor}
             distance={item.distance}
             rssi={item.rssi}
+            pressHandler={() => pressHandler(item.id)}
           />
         )}
         keyExtractor={(item) => item.id}

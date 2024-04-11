@@ -1,18 +1,26 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 
-function CardView({ title, major, minor, distance, rssi }) {
+function CardView({ title, major, minor, distance, rssi, pressHandler }) {
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{title}</Text>
+    <TouchableOpacity onPress={pressHandler}>
+      <View style={styles.card}>
+        <Text style={styles.title}>{title}</Text>
 
-      <Text style={styles.cardInfo}>
-        Major: {major} Minor: {minor}
-      </Text>
+        <Text style={styles.cardInfo}>
+          Major: {major} Minor: {minor}
+        </Text>
 
-      <Text style={styles.cardInfo}>
-        Distance: {distance} RSSI: {rssi}
-      </Text>
-    </View>
+        <Text style={styles.cardInfo}>
+          Distance: {distance} RSSI: {rssi}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 }
 

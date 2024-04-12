@@ -35,7 +35,7 @@ const HomeScreen = ({ navigation }) => {
     // This should navigate to a new page
     const item = beaconData.find((data) => data.id === key);
     // console.log(`Pressed ${key} - ${item.title}`);
-    navigation.navigate("BeaconDetails");
+    navigation.navigate("BeaconDetails", { ...item });
   };
 
   return (

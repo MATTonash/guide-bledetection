@@ -1,3 +1,20 @@
+/**
+ * BeaconDetails component displays the details of a beacon.
+ *
+ * @param {object} route - The route object passed from the navigation prop.
+ * @param {object} navigation - The navigation prop to navigate between screens.
+ *
+ * It receives the beacon details as route params:
+ * - id - The id of the beacon.
+ * - title - The title of the beacon.
+ * - major - The major id of the beacon.
+ * - minor - The minor id of the beacon.
+ * - distance - The distance to the beacon.
+ * - rssi - The received signal strength indicator.
+ *
+ * It displays the title and details in a View.
+ */
+
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 

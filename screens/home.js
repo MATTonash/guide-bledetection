@@ -1,9 +1,24 @@
+/**
+ * HomeScreen component
+ *
+ * Displays a list of beacons and allows navigating to a
+ * details screen for each beacon
+ */
+
 import React from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { useState } from "react";
 import CardView from "../components/cardView";
 
+/**
+ * HomeScreen component
+ * @param {object} navigation - React navigation prop for navigating between screens
+ */
 const HomeScreen = ({ navigation }) => {
+  /**
+   * beaconData state
+   * Array of beacon objects with id, title, major, minor, distance and rssi
+   */
   const [beaconData, setBeaconData] = useState([
     {
       id: 1,
@@ -31,6 +46,11 @@ const HomeScreen = ({ navigation }) => {
     },
   ]);
 
+  /**
+   * pressHandler
+   * Handles onPress event from CardView
+   * @param {number} key - id of pressed CardView
+   */
   const pressHandler = (key) => {
     // This should navigate to a new page
     const item = beaconData.find((data) => data.id === key);

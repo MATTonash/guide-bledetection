@@ -17,12 +17,13 @@
 
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function BeaconDetails({ route, navigation }) {
   const { id, title, major, minor, distance, rssi } = route.params;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <View>
         <Text style={styles.sub_text}>Major: {major}</Text>
@@ -30,7 +31,7 @@ function BeaconDetails({ route, navigation }) {
         <Text style={styles.sub_text}>RSSI: {rssi}</Text>
         <Text style={styles.sub_text}>Distance: {distance}m</Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

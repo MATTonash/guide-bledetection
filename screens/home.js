@@ -5,10 +5,20 @@
  * details screen for each beacon
  */
 
-import React from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import React, { useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import { useState } from "react";
 import CardView from "../components/cardView";
+import useBLE from "../useBLE";
+import { SafeAreaView } from "react-native-safe-area-context";
+import DeviceModal from "../components/DeviceConnectionModal";
 
 /**
  * HomeScreen component
@@ -46,6 +56,18 @@ const HomeScreen = ({ navigation }) => {
     },
   ]);
 
+  // Manage the bluetooth connections
+  const {
+    scanForPeripherals,
+    requestPermissions,
+    connectToDevice,
+    allDevices,
+    connectedDevice,
+    disconnectFromDevice,
+    distance,
+  } = useBLE();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   /**
    * pressHandler
    * Handles onPress event from CardView
@@ -58,26 +80,96 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate("BeaconDetails", { ...item });
   };
 
+  const scanForDevices = () => {
+    requestPermissions((isGranted) => {
+      if (isGranted) {
+        scanForPeripherals();
+      }
+    });
+  };
+
+  const hideModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const openModal = async () => {
+    scanForDevices();
+    setIsModalVisible(true);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Beacons</Text>
-      {/* FlatList with data from state*/}
-      <FlatList
-        data={beaconData}
-        renderItem={({ item }) => (
-          <CardView
-            title={item.title}
-            major={item.major}
-            minor={item.minor}
-            distance={item.distance}
-            rssi={item.rssi}
-            pressHandler={() => pressHandler(item.id)}
-          />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.heartRateTitleWrapper}>
+        {connectedDevice ? (
+          <>
+            <PulseIndicator />
+            <Text style={styles.heartRateTitleText}>Your Heart Rate Is:</Text>
+            <Text style={styles.heartRateText}>{heartRate} bpm</Text>
+          </>
+        ) : (
+          <Text style={styles.heartRateTitleText}>
+            Please Search for devices
+            {console.log("hello")}
+          </Text>
         )}
-        keyExtractor={(item) => item.id}
+      </View>
+      <TouchableOpacity
+        onPress={connectedDevice ? disconnectFromDevice : openModal}
+        style={styles.ctaButton}
+      >
+        <Text style={styles.ctaButtonText}>
+          {connectedDevice ? "Disconnect" : "Connect"}
+        </Text>
+      </TouchableOpacity>
+      <DeviceModal
+        closeModal={hideModal}
+        visible={isModalVisible}
+        connectToPeripheral={connectToDevice}
+        devices={allDevices}
       />
-    </View>
+    </SafeAreaView>
   );
+
+  // return (
+  //   <SafeAreaView style={styles.container}>
+  //     <View style={styles.heartRateTitleWrapper}>
+  //       <Text style={{ fontSize: 50, color: "black" }}>Meters</Text>
+  //       <Text style={{ fontSize: 300, color: "black" }}>{distance}</Text>
+  //     </View>
+  //     <TouchableOpacity onPress={scanForDevices} style={styles.ctaButton}>
+  //       <Text style={styles.ctaButtonText}>FIND THE DISTANCE</Text>
+  //     </TouchableOpacity>
+  //   </SafeAreaView>
+  // );
+
+  // return (
+  //   <SafeAreaView style={styles.container}>
+  //     <Text style={styles.title}>Beacons</Text>
+  //     {/* FlatList with data from state*/}
+  //     <FlatList
+  //       data={beaconData}
+  //       renderItem={({ item }) => (
+  //         <CardView
+  //           title={item.title}
+  //           major={item.major}
+  //           minor={item.minor}
+  //           distance={item.distance}
+  //           rssi={item.rssi}
+  //           pressHandler={() => pressHandler(item.id)}
+  //         />
+  //       )}
+  //       keyExtractor={(item) => item.id}
+  //     />
+  //     {/* Todo: Change ble stuff*/}
+  //     <View style={styles.heartRateTitleWrapper}>
+  //       <Text style={{ fontSize: 50, color: "black" }}>Meters</Text>
+  //       <Text style={{ fontSize: 300, color: "black" }}>{distance}</Text>
+  //     </View>
+  //     <TouchableOpacity onPress={scanForDevices} style={styles.ctaButton}>
+  //       <Text style={styles.ctaButtonText}>FIND THE DISTANCE</Text>
+  //     </TouchableOpacity>
+  //   </SafeAreaView>
+  // );
 };
 
 const styles = StyleSheet.create({
@@ -91,6 +183,40 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: "black",
     fontWeight: "bold",
+  },
+  container2: {
+    flex: 1,
+    backgroundColor: "#f2f2f2",
+  },
+  heartRateTitleWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  heartRateTitleText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginHorizontal: 20,
+    color: "black",
+  },
+  heartRateText: {
+    fontSize: 25,
+    marginTop: 15,
+  },
+  ctaButton: {
+    backgroundColor: "purple",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 50,
+    marginHorizontal: 20,
+    marginBottom: 5,
+    borderRadius: 8,
+  },
+  ctaButtonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
   },
 });
 
